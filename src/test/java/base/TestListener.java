@@ -1,9 +1,8 @@
-package listeners;
+package base;
 
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-import base.BaseTest;
 import utils.ScreenshotUtil;
 
 public class TestListener implements ITestListener {
@@ -19,7 +18,7 @@ public class TestListener implements ITestListener {
             );
 
             BaseTest.getDriver().quit();
-            BaseTest.removeDriver();
+            BaseTest.removeDriver();   // IMPORTANT
         }
     }
 
@@ -27,9 +26,8 @@ public class TestListener implements ITestListener {
     public void onTestSuccess(ITestResult result) {
 
         if (BaseTest.getDriver() != null) {
-
             BaseTest.getDriver().quit();
-            BaseTest.removeDriver();
+            BaseTest.removeDriver();   // IMPORTANT
         }
     }
 }

@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import org.testng.annotations.Listeners;
 
 import base.BaseTest;
-import base.LoginPage;
+import pages.LoginPage;
 
 @Listeners(listeners.TestListener.class)
 public class LoginTest extends BaseTest {
@@ -15,28 +15,25 @@ public class LoginTest extends BaseTest {
 
     @BeforeMethod
     public void pageSetup() {
-        login = new LoginPage(driver);
+        login = new LoginPage(getDriver());
     }
 
-    @Test(priority = 1)
+    @Test(priority = 1 ,groups = "positive")
     public void validLoginTest() throws InterruptedException {
-
+   
         System.out.println("=== Valid Login Test Started ===");
 
         login.login("standard_user", "secret_sauce");
 
         Thread.sleep(3000);
 
-        String currentUrl = driver.getCurrentUrl();
+        String currentUrl = getDriver().getCurrentUrl();
         System.out.println("Current URL: " + currentUrl);
 
         Assert.assertTrue(currentUrl.contains("inventory"),
                 "Login failed - Inventory page not loaded");
     }
 
-
-
-    // ---------------- NEGATIVE TEST ----------------
 
     @Test(priority = 2, groups = "negative")
     public void invalidLoginTest() {

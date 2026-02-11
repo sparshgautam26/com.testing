@@ -4,37 +4,48 @@ import java.time.Duration;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.BeforeMethod;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
+import org.testng.annotations.BeforeMethod;
 
 public class BaseTest {
 
-    public static WebDriver driver;
+    // ThreadLocal for parallel execution
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
-    @BeforeMethod
-    public void initialization() {
 
-        System.out.println("=== Browser Initializing ===");
+    @BeforeMethod(alwaysRun = true)
+    public void setUp() {
 
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-maximized");
 
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.set(new ChromeDriver(options));
 
-        driver.get("https://www.saucedemo.com/");
+        getDriver().manage().timeouts()
+                .implicitlyWait(Duration.ofSeconds(10));
 
-        System.out.println("=== Browser Launched ===");
+        getDriver().get("https://www.saucedemo.com/");
     }
 
-    @AfterMethod
-    public void quitBrowser() {
 
-        if (driver != null) {
-            driver.quit();
-            System.out.println("=== Browser Closed ===");
+    @AfterMethod(alwaysRun = true)
+    public void tearDown() {
+
+        if (getDriver() != null) {
+            getDriver().quit();
+            removeDriver();
         }
+    }
+
+
+    // 🔥 Always use this method in tests
+    public static WebDriver getDriver() {
+        return driver.get();
+    }
+
+    // 🔥 Required for ThreadLocal cleanup
+    public static void removeDriver() {
+        driver.remove();
     }
 }
