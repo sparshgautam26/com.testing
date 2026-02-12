@@ -25,12 +25,31 @@ public class LoginPage extends BasePage {
     }
 
     public boolean isLoginSuccess() {
-        log("Checking login success");
-        return driver.findElement(inventoryTitle).isDisplayed();
+        try {
+            return driver.findElement(inventoryTitle).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean isErrorDisplayed() {
-        log("Checking error message");
-        return driver.findElement(errorMsg).isDisplayed();
+        try {
+            return driver.findElement(errorMsg).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
     }
-}
+
+    public String getErrorText() {
+        try {
+            return driver.findElement(errorMsg).getText();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+
+    
+
+    }
+

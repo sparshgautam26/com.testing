@@ -2,26 +2,20 @@ package listeners;
 
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-import org.openqa.selenium.WebDriver;
 import base.BaseTest;
+import utils.ScreenshotUtil;
+import org.openqa.selenium.WebDriver;
 
 public class TestListener implements ITestListener {
 
     @Override
-    
-    public void onTestStart(ITestResult result) {
-        System.out.println("STARTED: " + result.getName());
-    }
-
-    @Override
-    public void onTestSuccess(ITestResult result) {
-        System.out.println("PASSED: " + result.getName());
-    }
-
-    @Override
     public void onTestFailure(ITestResult result) {
-        System.out.println("FAILED: " + result.getName());
-    }
 
-    }
+        Object obj = result.getInstance();
+        WebDriver driver =
+                ((BaseTest)obj).getDriver();
 
+        ScreenshotUtil.capture(driver,
+                result.getName());
+    }
+}

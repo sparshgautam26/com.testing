@@ -1,0 +1,11 @@
+<suite name="SecuritySuite" parallel="methods" thread-count="5">
+    <test name="SecurityTests">
+        <classes>
+            <class name="tests.LoginSecurityTest"/>
+            <class name="tests.RaceConditionHardTest"/>
+            <class name="tests.SessionTest"/>
+            <class name="tests.BackButtonSecurityTest"/>
+            <class name="tests.RateLimitTest"/>
+        </classes>
+    </test>
+</suite>
