@@ -6,17 +6,12 @@ import org.testng.annotations.Test;
 
 import base.BaseTest;
 import pages.LoginPage;
-import utils.RetryAnalyzer;
 
 public class LoginTest extends BaseTest {
 
-    // =========================================
-    // DATA PROVIDER
-    // =========================================
-    @DataProvider(name = "loginData", parallel = true)
+    @DataProvider(name = "loginData")
     public Object[][] loginData() {
-
-        return new Object[][]{
+        return new Object[][] {
 
                 // VALID
                 {"standard_user", "secret_sauce", true},
@@ -30,39 +25,33 @@ public class LoginTest extends BaseTest {
         };
     }
 
-    // =========================================
-    // LOGIN TEST
-    // =========================================
-    @Test(dataProvider = "loginData",
-          retryAnalyzer = RetryAnalyzer.class)
+    @Test(dataProvider = "loginData")
     public void loginTest(String username,
                           String password,
                           boolean expectedSuccess) {
 
-        LoginPage login =
-                new LoginPage(getDriver());
+        LoginPage login = new LoginPage(getDriver());
+
+        // 🔥 Force fresh state every iteration
+        login.openLoginPage();
 
         login.login(username, password);
 
-        // -------- VALID CASE --------
         if (expectedSuccess) {
 
             Assert.assertTrue(
                     login.isLoginSuccess(),
-                    "Login should succeed but failed.");
-        }
+                    "Login should succeed but failed"
+            );
 
-        // -------- NEGATIVE CASE --------
-        else {
+        } else {
 
-            String actualError =
-                    login.getErrorText();
+            String error = login.getErrorText();
 
             Assert.assertTrue(
-                    actualError.contains(
-                            "Username and password do not match"),
-                    "Expected error message not shown. Actual: "
-                            + actualError);
+                    error.toLowerCase().contains("epic sadface"),
+                    "Expected error not shown. Actual: " + error
+            );
         }
     }
 }

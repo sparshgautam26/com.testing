@@ -1,39 +1,48 @@
 package base;
 
 import java.time.Duration;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class BaseTest {
 
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
-    public WebDriver getDriver(){
+    @BeforeMethod
+    public void setUp() {
+
+        WebDriverManager.chromedriver().setup();  // IMPORTANT
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-maximized");
+        options.addArguments("--remote-allow-origins=*");
+
+        WebDriver localDriver = new ChromeDriver(options);
+
+        localDriver.manage()
+                .timeouts()
+                .implicitlyWait(Duration.ofSeconds(10));
+
+        localDriver.get("https://www.saucedemo.com/");
+
+        driver.set(localDriver);
+    }
+
+    public WebDriver getDriver() {
         return driver.get();
     }
 
-    @BeforeMethod
-    public void setUp(){
-
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--incognito");
-
-        driver.set(new ChromeDriver(options));
-
-        getDriver().manage().timeouts()
-                .implicitlyWait(Duration.ofSeconds(10));
-
-        getDriver().manage().window().maximize();
-        getDriver().get("https://www.saucedemo.com/");
-    }
-
     @AfterMethod
-    public void tearDown(){
+    public void tearDown() {
 
-        if(getDriver()!=null){
-            getDriver().quit();
+        if (driver.get() != null) {
+            driver.get().quit();
             driver.remove();
         }
     }
