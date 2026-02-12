@@ -1,44 +1,55 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
-public class InventoryPage {
+import base.BasePage;
 
-    WebDriver driver;
+public class InventoryPage extends BasePage {
 
     public InventoryPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+        super(driver);
     }
 
-    @FindBy(id = "add-to-cart-sauce-labs-backpack")
-    WebElement addBackpack;
+    By addToCartBtn = By.id("add-to-cart-sauce-labs-backpack");
+    By cartIcon = By.className("shopping_cart_link");
+ // LOCATORS
+    private By menuBtn = By.id("react-burger-menu-btn");
+    private By logoutLink = By.id("logout_sidebar_link");
 
-    @FindBy(id = "remove-sauce-labs-backpack")
-    WebElement removeBackpack;
+    // METHOD
+   
+    
 
-    @FindBy(className = "shopping_cart_badge")
-    WebElement cartBadge;
-
-    @FindBy(className = "shopping_cart_link")
-    WebElement cartIcon;
 
     public void addProductToCart() {
-        addBackpack.click();
+        log("Adding product to cart");
+        click(addToCartBtn, "Add To Cart");
     }
 
-    public void removeProductFromCart() {
-        removeBackpack.click();
+    public void goToCart() {
+        log("Navigating to cart page");
+        click(cartIcon, "Cart Icon");
+    
+    }
+    public void waitForSeconds(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+        
+        
+        public void logoutFromApp() {
+            log("Logging out from application");
+
+            click(menuBtn, "Menu Button");
+            waitForSeconds(1);
+            click(logoutLink, "Logout Link");
+            waitForSeconds(1);
+        
+
     }
 
-    public String getCartCount() {
-        return cartBadge.getText();
     }
-
-    public void clickCart() {
-        cartIcon.click();
-    }
-}

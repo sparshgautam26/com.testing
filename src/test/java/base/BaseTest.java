@@ -1,7 +1,6 @@
 package base;
 
 import java.time.Duration;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -10,42 +9,52 @@ import org.testng.annotations.BeforeMethod;
 
 public class BaseTest {
 
-    // ThreadLocal for parallel execution
-    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    protected WebDriver driver;
 
-
-    @BeforeMethod(alwaysRun = true)
+    @BeforeMethod
     public void setUp() {
 
+    	System.out.println("===== Browser Launching =====");
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
 
-        driver.set(new ChromeDriver(options));
+        // IMPORTANT — Fresh clean session
+        options.addArguments("--incognito");
+        options.addArguments("--disable-notifications");
+        options.addArguments("--disable-infobars");
+        options.addArguments("--disable-save-password-bubble");
+        options.addArguments("--disable-features=PasswordLeakDetection,PasswordManagerOnboarding");
 
-        getDriver().manage().timeouts()
-                .implicitlyWait(Duration.ofSeconds(10));
+        driver = new ChromeDriver(options);
 
-        getDriver().get("https://www.saucedemo.com/");
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        driver.manage().window().maximize();
+        driver.get("https://www.saucedemo.com/");
     }
-
-
-    @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-
-        if (getDriver() != null) {
-            getDriver().quit();
-            removeDriver();
+    
+    public void waitForSeconds(int seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
 
-    // 🔥 Always use this method in tests
-    public static WebDriver getDriver() {
-        return driver.get();
+    public WebDriver getDriver() {
+        return driver;
     }
 
-    // 🔥 Required for ThreadLocal cleanup
-    public static void removeDriver() {
-        driver.remove();
+    @AfterMethod
+    public void tearDown() {
+    	System.out.println("===== Browser Closed =====");
+        if (driver != null) {
+            driver.quit();
+        }
     }
-}
+
+
+
+    
+        }
+    
+

@@ -1,37 +1,36 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
-public class LoginPage  {
+import base.BasePage;
 
-	private WebDriver driver;
-	
-    @FindBy(id = "user-name")
-    WebElement username;
-
-    @FindBy(id = "password")
-    WebElement password;
-
-    @FindBy(id = "login-button")
-    WebElement loginBtn;
-
-    @FindBy(xpath = "//h3[@data-test='error']")
-    WebElement errorMsg;
+public class LoginPage extends BasePage {
 
     public LoginPage(WebDriver driver) {
-        PageFactory.initElements(driver, this);
+        super(driver);
     }
+
+    By username = By.id("user-name");
+    By password = By.id("password");
+    By loginBtn = By.id("login-button");
+    By errorMsg = By.cssSelector("h3[data-test='error']");
+    By inventoryTitle = By.className("title");
 
     public void login(String user, String pass) {
-        username.sendKeys(user);
-        password.sendKeys(pass);
-        loginBtn.click();
+        log("Starting Login");
+        type(username, user, "Username");
+        type(password, pass, "Password");
+        click(loginBtn, "Login Button");
     }
 
-    public String getErrorMessage() {
-        return errorMsg.getText();
+    public boolean isLoginSuccess() {
+        log("Checking login success");
+        return driver.findElement(inventoryTitle).isDisplayed();
+    }
+
+    public boolean isErrorDisplayed() {
+        log("Checking error message");
+        return driver.findElement(errorMsg).isDisplayed();
     }
 }

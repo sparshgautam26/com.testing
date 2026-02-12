@@ -1,35 +1,29 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
-public class CartPage {
+import base.BasePage;
 
-    WebDriver driver;
+public class CartPage extends BasePage {
 
     public CartPage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+        super(driver);
     }
 
-    @FindBy(className = "inventory_item_name")
-    WebElement productName;
-
-    @FindBy(id = "checkout")
-    WebElement checkoutBtn;
+    By productName = By.className("inventory_item_name");
+    By checkoutBtn = By.id("checkout");
 
     public boolean isProductDisplayed() {
-        return productName.isDisplayed();
+        log("Checking product in cart");
+        return driver.findElement(productName).isDisplayed();
     }
 
     public String getProductName() {
-        return productName.getText();
+        return getText(productName);
     }
 
     public void clickCheckout() {
-        checkoutBtn.click();
+        click(checkoutBtn, "Checkout Button");
     }
 }
-
